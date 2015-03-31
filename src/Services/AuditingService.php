@@ -17,11 +17,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace DreamFactory\Library\Fabric\Auditing\Services;
+namespace DreamFactory\Enterprise\Services\Auditing\Services;
 
-use DreamFactory\Library\Fabric\Auditing\Components\GelfMessage;
-use DreamFactory\Library\Fabric\Auditing\Enums\AuditLevels;
-use DreamFactory\Library\Fabric\Auditing\Utility\GelfLogger;
+use DreamFactory\Enterprise\Services\Auditing\Components\GelfMessage;
+use DreamFactory\Enterprise\Services\Auditing\Enums\AuditLevels;
+use DreamFactory\Enterprise\Services\Auditing\Utility\GelfLogger;
 use DreamFactory\Library\Utility\IfSet;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;

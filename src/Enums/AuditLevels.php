@@ -1,5 +1,5 @@
 <?php
-namespace DreamFactory\Library\Fabric\Auditing\Enums;
+namespace DreamFactory\Enterprise\Services\Auditing\Enums;
 
 use DreamFactory\Library\Utility\Enums\FactoryEnum;
 

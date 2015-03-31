@@ -2,7 +2,7 @@
 <phpdoc>
 	<title>DreamFactory Enterprise&trade; Auditing Library</title>
 	<parser>
-		<default-package-name>DreamFactory\Library\Fabric\Auditing</default-package-name>
+		<default-package-name>DreamFactory\Enterprise\Services\Auditing</default-package-name>
 		<target>build/doc</target>
 		<markers>
 			<item>TODO</item>

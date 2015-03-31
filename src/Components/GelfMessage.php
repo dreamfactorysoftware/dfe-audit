@@ -1,7 +1,7 @@
 <?php
-namespace DreamFactory\Library\Fabric\Auditing\Components;
+namespace DreamFactory\Enterprise\Services\Auditing\Components;
 
-use DreamFactory\Library\Fabric\Auditing\Enums\AuditLevels;
+use DreamFactory\Enterprise\Services\Auditing\Enums\AuditLevels;
 
 /**
  * A GELF v1.1 message

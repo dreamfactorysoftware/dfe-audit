@@ -17,10 +17,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace DreamFactory\Library\Fabric\Auditing\Providers;
+namespace DreamFactory\Enterprise\Services\Auditing\Providers;
 
 use DreamFactory\Enterprise\Common\Providers\BaseServiceProvider;
-use DreamFactory\Library\Fabric\Auditing\Services\AuditingService;
+use DreamFactory\Enterprise\Services\Auditing\Services\AuditingService;
 
 /**
  * Register the auditing service as a provider with Laravel.
@@ -31,7 +31,7 @@ use DreamFactory\Library\Fabric\Auditing\Services\AuditingService;
  *  'providers' => array(
  *
  *      ... Other Providers Above ...
- *      'DreamFactory\Library\Fabric\Auditing\Providers\AuditServiceProvider',
+ *      'DreamFactory\Enterprise\Services\Auditing\Providers\AuditServiceProvider',
  *
  *  ),
  */
