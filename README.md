@@ -1,4 +1,4 @@
-### DreamFactory Enterprise(tm) Auditing Library v1.0.0
+### DreamFactory Enterprise(tm) Auditing Library v1.0.1
 
 This library contains common auditing components for DreamFactory Enterprise&trade;.
 
