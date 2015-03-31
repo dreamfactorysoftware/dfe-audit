@@ -23,11 +23,15 @@
 		{
 			"type": "vcs",
 			"url":  "git@github.com:dreamfactorysoftware/fabric-common.git"
+		},
+		{
+			"type": "vcs",
+			"url":  "git@github.com:dreamfactorysoftware/dfe-common.git"
 		}
 	],
 	"minimum-stability": "dev",
 	"require":           {
-		"dreamfactory/fabric-common": "dev-develop as dev-master"
+		"dreamfactory/dfe-common": "dev-develop as dev-master"
 	},
 	"require-dev":       {
 		"laravel/framework": "~5.0",
