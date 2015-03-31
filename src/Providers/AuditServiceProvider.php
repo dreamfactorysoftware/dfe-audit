@@ -19,7 +19,6 @@
  */
 namespace DreamFactory\Enterprise\Services\Auditing\Providers;
 
-use DreamFactory\Enterprise\Common\Providers\BaseServiceProvider;
 use DreamFactory\Enterprise\Services\Auditing\Services\AuditingService;
 
 /**
