@@ -44,12 +44,11 @@ class AuditingService
     //********************************************************************************
 
     /**
-     * @param Application              $app
-     * @param \Illuminate\Http\Request $request
+     * @param Application $app
      */
-    public function __construct( $app, Request $request )
+    public function __construct( $app )
     {
-        $this->_request = $request;
+        $this->_request = app( 'request' );
         $this->_logger = new GelfLogger();
 
         try
@@ -95,6 +94,8 @@ class AuditingService
         {
             $_metadata = IfSet::get( $sessionData, 'metadata', [] );
             unset( $sessionData['metadata'] );
+
+            $request = $request ?: $this->_request;
 
             //  Add in stuff for API request logging
             static::log(
@@ -203,4 +204,20 @@ class AuditingService
         return $this;
     }
 
+    /**
+     * @param array $metadata
+     *
+     * @return $this
+     */
+    public function setMetadata( array $metadata )
+    {
+        $this->_metadata = [];
+
+        foreach ( $metadata as $_key => $_value )
+        {
+            $this->_metadata[str_replace( '-', '_', $_key )] = $_value;
+        }
+
+        return $this;
+    }
 }

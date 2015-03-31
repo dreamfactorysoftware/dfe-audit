@@ -2,7 +2,6 @@
 
 use DreamFactory\Enterprise\Common\Providers\BaseServiceProvider;
 use DreamFactory\Enterprise\Services\Auditing\Services\AuditingService;
-use Illuminate\Http\Request;
 
 /**
  * Register the auditing service as a provider with Laravel.
@@ -55,9 +54,9 @@ class AuditServiceProvider extends BaseServiceProvider
         //  Register object into instance container
         $this->singleton(
             static::IOC_NAME,
-            function ( $app, Request $request )
+            function ( $app )
             {
-                return new AuditingService( $app, $request );
+                return new AuditingService( $app );
             }
         );
     }
