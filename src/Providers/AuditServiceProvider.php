@@ -62,4 +62,15 @@ class AuditServiceProvider extends BaseServiceProvider
         );
     }
 
+    /**
+     * Publish our junk
+     */
+    public function boot()
+    {
+        if ( !file_exists( config_path( 'instance.php' ) ) )
+        {
+            $this->publishes( [__DIR__ . '/../../config/instance.php' => config_path( 'instance.php' ),], 'config' );
+        }
+    }
+
 }

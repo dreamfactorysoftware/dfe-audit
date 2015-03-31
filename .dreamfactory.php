@@ -1,8 +1,8 @@
 <?php
 /**
- * This file is part of DreamFactory Enterprise(tm) Database Library
+ * This file is part DreamFactory Enterprise(tm)
  *
- * Copyright 2014 DreamFactory Software, Inc. All Rights Reserved.
+ * Copyright 2012-2015 DreamFactory Software, Inc. All Rights Reserved.
  *
  * Proprietary code, DO NOT DISTRIBUTE!
  *
