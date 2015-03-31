@@ -1,36 +1,16 @@
-<?php
-/**
- * This file is part of the DreamFactory Services Platform(tm) SDK For PHP
- *
- * DreamFactory Services Platform(tm) <http://github.com/dreamfactorysoftware/dsp-core>
- * Copyright 2012-2014 DreamFactory Software, Inc. <support@dreamfactory.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-namespace DreamFactory\Enterprise\Services\Auditing\Services;
+<?php namespace DreamFactory\Enterprise\Services\Auditing\Services;
 
 use DreamFactory\Enterprise\Services\Auditing\Components\GelfMessage;
 use DreamFactory\Enterprise\Services\Auditing\Enums\AuditLevels;
 use DreamFactory\Enterprise\Services\Auditing\Utility\GelfLogger;
 use DreamFactory\Library\Utility\IfSet;
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerInterface;
-use Symfony\Component\HttpFoundation\Request;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Http\Request;
 
 /**
  * Contains auditing methods for DFE
  */
-class AuditingService implements LoggerAwareInterface
+class AuditingService
 {
     //******************************************************************************
     //* Constants
@@ -48,18 +28,32 @@ class AuditingService implements LoggerAwareInterface
     /**
      * @type GelfLogger
      */
-    protected static $_logger = null;
+    protected $_logger = null;
+    /**
+     * @type \Illuminate\Http\Request
+     */
+    protected $_request = null;
 
     //********************************************************************************
     //* Public Methods
     //********************************************************************************
 
     /**
+     * @param Application              $app
+     * @param \Illuminate\Http\Request $request
+     */
+    public function __construct( $app, Request $request )
+    {
+        $this->_request = $request;
+        $this->_logger = new GelfLogger();
+    }
+
+    /**
      * @param string $host
      */
-    public static function setHost( $host = GelfLogger::DEFAULT_HOST )
+    public function setHost( $host = GelfLogger::DEFAULT_HOST )
     {
-        static::getLogger()->setHost( $host );
+        $this->_logger->setHost( $host );
     }
 
     /**
@@ -73,7 +67,7 @@ class AuditingService implements LoggerAwareInterface
      *
      * @return bool
      */
-    public static function logRequest( $instanceId, Request $request, $sessionData = array(), $level = AuditLevels::INFO, $facility = self::DEFAULT_FACILITY )
+    public function logRequest( $instanceId, Request $request, $sessionData = array(), $level = AuditLevels::INFO, $facility = self::DEFAULT_FACILITY )
     {
         try
         {
@@ -113,11 +107,11 @@ class AuditingService implements LoggerAwareInterface
      *
      * @return bool
      */
-    public static function log( $data = array(), $level = AuditLevels::INFO, $request = null )
+    public function log( $data = array(), $level = AuditLevels::INFO, $request = null )
     {
         try
         {
-            $_request = $request ?: ( app( 'request' ) ?: Request::createFromGlobals() );
+            $_request = $request ?: $this->_request;
             $_data = array_merge( static::_buildBasicEntry( $_request ), $data );
 
             $_message = new GelfMessage( $_data );
@@ -125,7 +119,7 @@ class AuditingService implements LoggerAwareInterface
             $_message->setShortMessage( $_request->getMethod() . ' ' . $_request->getRequestUri() );
             $_message->setFullMessage( 'DFE Audit | ' . implode( ', ', $_data['source_ip'] ) . ' | ' . $_data['request_timestamp'] );
 
-            static::getLogger()->send( $_message );
+            $this->_logger->send( $_message );
         }
         catch ( \Exception $_ex )
         {
@@ -134,57 +128,54 @@ class AuditingService implements LoggerAwareInterface
     }
 
     /**
-     * @param array   $data
      * @param Request $request
      *
      * @return array
      */
-    protected static function _buildBasicEntry( $request = null )
+    protected function _buildBasicEntry( $request )
     {
-        $_request = $request ?: Request::createFromGlobals();
-
         return array(
-            'request_timestamp' => (double)$_request->server->get( 'REQUEST_TIME_FLOAT' ),
-            'user_agent'        => $_request->headers->get( 'user-agent' ),
-            'source_ip'         => $_request->getClientIps(),
-            'content_type'      => $_request->getContentType(),
-            'content_length'    => (int)$_request->headers->get( 'Content-Length' ) ?: 0,
-            'token'             => $_request->headers->get( 'x-dreamfactory-session-token' ),
+            'request_timestamp' => (double)$request->server->get( 'REQUEST_TIME_FLOAT' ),
+            'user_agent'        => $request->headers->get( 'user-agent' ),
+            'source_ip'         => $request->getClientIps(),
+            'content_type'      => $request->getContentType(),
+            'content_length'    => (int)$request->headers->get( 'Content-Length' ) ?: 0,
+            'token'             => $request->headers->get( 'x-dreamfactory-session-token' ),
             'app_name'          => IfSet::get(
                 $_GET,
                 'app_name',
-                $_request->headers->get(
+                $request->headers->get(
                     'x-dreamfactory-application-name',
-                    $_request->headers->get( 'x-application-name' )
+                    $request->headers->get( 'x-application-name' )
                 )
             ),
             'dfe'               => array(),
-            'host'              => $_request->getHost(),
-            'method'            => $_request->getMethod(),
-            'path_info'         => $_request->getPathInfo(),
-            'path_translated'   => $_request->server->get( 'PATH_TRANSLATED' ),
-            'query'             => $_request->query->all(),
+            'host'              => $request->getHost(),
+            'method'            => $request->getMethod(),
+            'path_info'         => $request->getPathInfo(),
+            'path_translated'   => $request->server->get( 'PATH_TRANSLATED' ),
+            'query'             => $request->query->all(),
         );
     }
 
     /**
      * @return GelfLogger
      */
-    public static function getLogger()
+    public function getLogger()
     {
-        return static::$_logger ?: static::$_logger = new GelfLogger();
+        return $this->_logger;
     }
 
     /**
      * Sets a logger instance on the object
      *
-     * @param LoggerInterface $logger
+     * @param GelfLogger $logger
      *
      * @return $this
      */
-    public function setLogger( LoggerInterface $logger )
+    public function setLogger( GelfLogger $logger )
     {
-        static::$_logger = $logger;
+        $this->_logger = $logger;
 
         return $this;
     }

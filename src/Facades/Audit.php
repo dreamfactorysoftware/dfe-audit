@@ -1,5 +1,4 @@
-<?php
-namespace DreamFactory\Enterprise\Services\Auditing\Facades;
+<?php namespace DreamFactory\Enterprise\Services\Auditing\Facades;
 
 use DreamFactory\Enterprise\Services\Auditing\Enums\AuditLevels;
 use DreamFactory\Enterprise\Services\Auditing\Providers\AuditServiceProvider;
