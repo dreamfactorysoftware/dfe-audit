@@ -4,6 +4,7 @@ use DreamFactory\Enterprise\Services\Auditing\Components\GelfMessage;
 use DreamFactory\Enterprise\Services\Auditing\Enums\AuditLevels;
 use DreamFactory\Enterprise\Services\Auditing\Utility\GelfLogger;
 use DreamFactory\Library\Utility\IfSet;
+use DreamFactory\Library\Utility\JsonFile;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 
@@ -33,6 +34,10 @@ class AuditingService
      * @type \Illuminate\Http\Request
      */
     protected $_request = null;
+    /**
+     * @type array
+     */
+    protected $_metadata;
 
     //********************************************************************************
     //* Public Methods
@@ -46,6 +51,23 @@ class AuditingService
     {
         $this->_request = $request;
         $this->_logger = new GelfLogger();
+
+        try
+        {
+            $this->_metadata = null;
+
+            if ( file_exists( $_file = config_path( 'instance.php' ) ) )
+            {
+                if ( false !== ( $_data = JsonFile::decodeFile( $_file ) ) && is_array( $_data ) && !empty( $_data ) )
+                {
+                    $this->_metadata = $_data;
+                }
+            }
+        }
+        catch ( \Exception $_ex )
+        {
+            $this->_metadata = null;
+        }
     }
 
     /**
@@ -71,21 +93,22 @@ class AuditingService
     {
         try
         {
-            $_metadata = IfSet::get( $sessionData, 'metadata' );
+            $_metadata = IfSet::get( $sessionData, 'metadata', [] );
             unset( $sessionData['metadata'] );
 
             //  Add in stuff for API request logging
             static::log(
                 array(
                     'facility' => $facility,
-                    'dfe'      => array(
-                        'instance_id'       => $instanceId,
-                        'instance_owner_id' => IfSet::get( $_metadata, 'owner-email-address' ),
-                        'cluster_id'        => IfSet::get( $_metadata, 'cluster-id', $request->server->get( 'DFE_CLUSTER_ID' ) ),
-                        'app_server_id'     => IfSet::get( $_metadata, 'app-server-id', $request->server->get( 'DFE_APP_SERVER_ID' ) ),
-                        'db_server_id'      => IfSet::get( $_metadata, 'db-server-id', $request->server->get( 'DFE_DB_SERVER_ID' ) ),
-                        'web_server_id'     => IfSet::get( $_metadata, 'web-server-id', $request->server->get( 'DFE_WEB_SERVER_ID' ) ),
-                    ),
+                    'dfe'      => $this->_metadata
+                        ?: array(
+                            'instance_id'       => $instanceId,
+                            'instance_owner_id' => IfSet::get( $_metadata, 'owner-email-address' ),
+                            'cluster_id'        => IfSet::get( $_metadata, 'cluster-id', $request->server->get( 'DFE_CLUSTER_ID' ) ),
+                            'app_server_id'     => IfSet::get( $_metadata, 'app-server-id', $request->server->get( 'DFE_APP_SERVER_ID' ) ),
+                            'db_server_id'      => IfSet::get( $_metadata, 'db-server-id', $request->server->get( 'DFE_DB_SERVER_ID' ) ),
+                            'web_server_id'     => IfSet::get( $_metadata, 'web-server-id', $request->server->get( 'DFE_WEB_SERVER_ID' ) ),
+                        ),
                     'user'     => $sessionData
                 ),
                 $level,
