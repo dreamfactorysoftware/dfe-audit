@@ -1,10 +1,9 @@
-<?php
-namespace DreamFactory\Library\Fabric\Auditing\Facades;
+<?php namespace DreamFactory\Enterprise\Services\Auditing\Facades;
 
-use DreamFactory\Library\Fabric\Auditing\Enums\AuditLevels;
-use DreamFactory\Library\Fabric\Auditing\Providers\AuditServiceProvider;
-use DreamFactory\Library\Fabric\Auditing\Services\AuditingService;
-use DreamFactory\Library\Fabric\Auditing\Utility\GelfLogger;
+use DreamFactory\Enterprise\Services\Auditing\Enums\AuditLevels;
+use DreamFactory\Enterprise\Services\Auditing\Providers\AuditServiceProvider;
+use DreamFactory\Enterprise\Services\Auditing\Services\AuditingService;
+use DreamFactory\Enterprise\Services\Auditing\Utility\GelfLogger;
 use Illuminate\Support\Facades\Facade;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;

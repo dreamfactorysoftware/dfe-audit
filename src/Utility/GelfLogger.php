@@ -1,9 +1,8 @@
 <?php
-namespace DreamFactory\Library\Fabric\Auditing\Providers;
-namespace DreamFactory\Library\Fabric\Auditing\Utility;
+namespace DreamFactory\Enterprise\Services\Auditing\Utility;
 
-use DreamFactory\Library\Fabric\Auditing\Components\GelfMessage;
-use DreamFactory\Library\Fabric\Auditing\Enums\AuditLevels;
+use DreamFactory\Enterprise\Services\Auditing\Components\GelfMessage;
+use DreamFactory\Enterprise\Services\Auditing\Enums\AuditLevels;
 use DreamFactory\Library\Utility\JsonFile;
 use Psr\Log\LoggerInterface;
 

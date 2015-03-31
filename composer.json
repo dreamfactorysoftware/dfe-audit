@@ -15,15 +15,28 @@
 			"email": "jerryablan@dreamfactory.com"
 		}
 	],
+	"repositories":      [
+		{
+			"type": "vcs",
+			"url":  "git@github.com:dreamfactorysoftware/fabric-db.git"
+		},
+		{
+			"type": "vcs",
+			"url":  "git@github.com:dreamfactorysoftware/fabric-common.git"
+		},
+		{
+			"type": "vcs",
+			"url":  "git@github.com:dreamfactorysoftware/dfe-common.git"
+		}
+	],
 	"minimum-stability": "dev",
 	"require":           {
-		"dreamfactory/php-utils": "~1.0"
+		"dreamfactory/dfe-common": "dev-develop as dev-master"
 	},
 	"require-dev":       {
-		"psr/log":           "~1.0",
-		"laravel/framework": "5.0.*",
+		"laravel/framework": "~5.0",
 		"phpunit/phpunit":   "@stable"
 	},
-	"autoload":          {"psr-4": {"DreamFactory\\Enterprise\\Services\\Auditing\\": "src/"}},
-	"extra":             {"branch-alias": {"dev-develop": "1.0.x-dev"}}
+	"autoload":          { "psr-4": { "DreamFactory\\Enterprise\\Services\\Auditing\\": "src/" } },
+	"extra":             { "branch-alias": { "dev-develop": "1.0.x-dev" } }
 }
