@@ -4,7 +4,6 @@ use DreamFactory\Enterprise\Services\Auditing\Components\GelfMessage;
 use DreamFactory\Enterprise\Services\Auditing\Enums\AuditLevels;
 use DreamFactory\Enterprise\Services\Auditing\Utility\GelfLogger;
 use DreamFactory\Library\Utility\IfSet;
-use DreamFactory\Library\Utility\JsonFile;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 
@@ -27,6 +26,10 @@ class AuditingService
     //******************************************************************************
 
     /**
+     * @type Application
+     */
+    protected $app;
+    /**
      * @type GelfLogger
      */
     protected $_logger = null;
@@ -44,29 +47,20 @@ class AuditingService
     //********************************************************************************
 
     /**
+     * boot up
+     */
+    public function boot()
+    {
+        $this->_request = app( 'request' );
+        $this->_logger = new GelfLogger();
+    }
+
+    /**
      * @param Application $app
      */
     public function __construct( $app )
     {
-        $this->_request = app( 'request' );
-        $this->_logger = new GelfLogger();
-
-        try
-        {
-            $this->_metadata = null;
-
-            if ( file_exists( $_file = config_path( 'instance.php' ) ) )
-            {
-                if ( false !== ( $_data = JsonFile::decodeFile( $_file ) ) && is_array( $_data ) && !empty( $_data ) )
-                {
-                    $this->_metadata = $_data;
-                }
-            }
-        }
-        catch ( \Exception $_ex )
-        {
-            $this->_metadata = null;
-        }
+        $this->app = $app;
     }
 
     /**
