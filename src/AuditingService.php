@@ -110,15 +110,17 @@ class AuditingService
      * @param array      $data    The data to log
      * @param int|string $level   The level, defaults to INFO
      * @param Request    $request The request, if available
+     * @param string     $type    Optional type
      *
      * @return bool
      */
-    public function log( $data = array(), $level = AuditLevels::INFO, $request = null )
+    public function log( $data = array(), $level = AuditLevels::INFO, $request = null, $type = null )
     {
         try
         {
             $_request = $request ?: Request::createFromGlobals();
             $_data = array_merge( static::_buildBasicEntry( $_request ), $data );
+            $type && $_data['type'] = $type;
 
             $_message = new GelfMessage( $_data );
             $_message->setLevel( $level );
