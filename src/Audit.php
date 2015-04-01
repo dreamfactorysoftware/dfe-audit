@@ -29,7 +29,7 @@ class Audit extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return AuditServiceProvider::ALIAS_NAME;
+        return AuditServiceProvider::IOC_NAME;
     }
 
 }

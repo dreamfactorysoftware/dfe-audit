@@ -1,7 +1,6 @@
 <?php namespace DreamFactory\Enterprise\Services\Auditing;
 
 use DreamFactory\Enterprise\Common\Providers\BaseServiceProvider;
-use Illuminate\Http\Request;
 
 /**
  * Register the auditing service as a provider with Laravel.
@@ -22,10 +21,6 @@ class AuditServiceProvider extends BaseServiceProvider
     //* Constants
     //******************************************************************************
 
-    /**
-     * @type string The name of the alias to create
-     */
-    const ALIAS_NAME = 'Audit';
     /**
      * @type string The name of the service in the IoC
      */
@@ -54,9 +49,9 @@ class AuditServiceProvider extends BaseServiceProvider
         //  Register object into instance container
         $this->singleton(
             static::IOC_NAME,
-            function ( $app, Request $request )
+            function ( $app )
             {
-                return new AuditingService( $app, $request );
+                return new AuditingService( $app );
             }
         );
     }

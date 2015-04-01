@@ -1,6 +1,5 @@
 <?php namespace DreamFactory\Enterprise\Services\Auditing;
 
-use DreamFactory\Enterprise\Common\Services\BaseService;
 use DreamFactory\Enterprise\Services\Auditing\Components\GelfMessage;
 use DreamFactory\Enterprise\Services\Auditing\Enums\AuditLevels;
 use DreamFactory\Enterprise\Services\Auditing\Utility\GelfLogger;
@@ -11,7 +10,7 @@ use Illuminate\Http\Request;
 /**
  * Contains auditing methods for DFE
  */
-class AuditingService extends BaseService
+class AuditingService
 {
     //******************************************************************************
     //* Constants
@@ -31,34 +30,26 @@ class AuditingService extends BaseService
      */
     protected $_logger = null;
     /**
-     * @type \Illuminate\Http\Request
-     */
-    protected $_request = null;
-    /**
      * @type array
      */
     protected $_metadata;
+    /**
+     * @type Application
+     */
+    protected $app;
 
     //********************************************************************************
     //* Public Methods
     //********************************************************************************
 
     /**
-     * @param Application $app
-     * @param Request     $request
-     */
-    public function __construct( $app, Request $request )
-    {
-        $this->_request = $request;
-
-        parent::__construct( $app );
-    }
-
-    /**
      * boot up
+     *
+     * @param Application $app
      */
-    public function boot()
+    public function __construct( $app )
     {
+        $this->app = $app;
         $this->_logger = new GelfLogger();
     }
 
@@ -88,8 +79,6 @@ class AuditingService extends BaseService
             $_metadata = IfSet::get( $sessionData, 'metadata', [] );
             unset( $sessionData['metadata'] );
 
-            $request = $request ?: $this->_request;
-
             //  Add in stuff for API request logging
             static::log(
                 array(
@@ -118,9 +107,9 @@ class AuditingService extends BaseService
     /**
      * Logs API requests to logging system
      *
-     * @param array   $data    The data to log
-     * @param int     $level   The level, defaults to INFO
-     * @param Request $request The request, if available
+     * @param array      $data    The data to log
+     * @param int|string $level   The level, defaults to INFO
+     * @param Request    $request The request, if available
      *
      * @return bool
      */
@@ -128,7 +117,7 @@ class AuditingService extends BaseService
     {
         try
         {
-            $_request = $request ?: $this->_request;
+            $_request = $request ?: Request::createFromGlobals();
             $_data = array_merge( static::_buildBasicEntry( $_request ), $data );
 
             $_message = new GelfMessage( $_data );
@@ -145,7 +134,7 @@ class AuditingService extends BaseService
     }
 
     /**
-     * @param Request $request
+     * @param Request|\Symfony\Component\HttpFoundation\Request $request
      *
      * @return array
      */
