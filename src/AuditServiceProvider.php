@@ -1,7 +1,7 @@
-<?php namespace DreamFactory\Enterprise\Services\Auditing\Providers;
+<?php namespace DreamFactory\Enterprise\Services\Auditing;
 
 use DreamFactory\Enterprise\Common\Providers\BaseServiceProvider;
-use DreamFactory\Enterprise\Services\Auditing\Services\AuditingService;
+use Illuminate\Http\Request;
 
 /**
  * Register the auditing service as a provider with Laravel.
@@ -38,7 +38,7 @@ class AuditServiceProvider extends BaseServiceProvider
     /**
      * @type string
      */
-    protected $_serviceClass = 'DreamFactory\\Library\\Fabric\\Auditing\\AuditingService';
+    protected $_serviceClass = 'DreamFactory\\Enterprise\\Services\\Auditing\\AuditingService';
 
     //********************************************************************************
     //* Public Methods
@@ -54,22 +54,10 @@ class AuditServiceProvider extends BaseServiceProvider
         //  Register object into instance container
         $this->singleton(
             static::IOC_NAME,
-            function ( $app )
+            function ( $app, Request $request )
             {
-                return new AuditingService( $app );
+                return new AuditingService( $app, $request );
             }
         );
     }
-
-    /**
-     * Publish our junk
-     */
-    public function boot()
-    {
-        if ( !file_exists( config_path( 'instance.php' ) ) )
-        {
-            $this->publishes( [__DIR__ . '/../../config/instance.php' => config_path( 'instance.php' ),], 'config' );
-        }
-    }
-
 }

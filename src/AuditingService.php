@@ -1,16 +1,17 @@
-<?php namespace DreamFactory\Enterprise\Services\Auditing\Services;
+<?php namespace DreamFactory\Enterprise\Services\Auditing;
 
+use DreamFactory\Enterprise\Common\Services\BaseService;
 use DreamFactory\Enterprise\Services\Auditing\Components\GelfMessage;
 use DreamFactory\Enterprise\Services\Auditing\Enums\AuditLevels;
 use DreamFactory\Enterprise\Services\Auditing\Utility\GelfLogger;
 use DreamFactory\Library\Utility\IfSet;
-use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 
 /**
  * Contains auditing methods for DFE
  */
-class AuditingService
+class AuditingService extends BaseService
 {
     //******************************************************************************
     //* Constants
@@ -25,10 +26,6 @@ class AuditingService
     //* Members
     //******************************************************************************
 
-    /**
-     * @type Application
-     */
-    protected $app;
     /**
      * @type GelfLogger
      */
@@ -47,20 +44,22 @@ class AuditingService
     //********************************************************************************
 
     /**
+     * @param Application $app
+     * @param Request     $request
+     */
+    public function __construct( $app, Request $request )
+    {
+        $this->_request = $request;
+
+        parent::__construct( $app );
+    }
+
+    /**
      * boot up
      */
     public function boot()
     {
-        $this->_request = app( 'request' );
         $this->_logger = new GelfLogger();
-    }
-
-    /**
-     * @param Application $app
-     */
-    public function __construct( $app )
-    {
-        $this->app = $app;
     }
 
     /**

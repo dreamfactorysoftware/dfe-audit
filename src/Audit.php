@@ -1,8 +1,6 @@
-<?php namespace DreamFactory\Enterprise\Services\Auditing\Facades;
+<?php namespace DreamFactory\Enterprise\Services\Auditing;
 
 use DreamFactory\Enterprise\Services\Auditing\Enums\AuditLevels;
-use DreamFactory\Enterprise\Services\Auditing\Providers\AuditServiceProvider;
-use DreamFactory\Enterprise\Services\Auditing\Services\AuditingService;
 use DreamFactory\Enterprise\Services\Auditing\Utility\GelfLogger;
 use Illuminate\Support\Facades\Facade;
 use Psr\Log\LoggerInterface;
