@@ -9,12 +9,12 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Audit
  *
- * @method static void setHost( $host = GelfLogger::DEFAULT_HOST )
- * @method static AuditingService setMetadata( array $metadata )
- * @method static bool log( $data = [], $level = AuditLevels::INFO, $request = null )
- * @method static bool logRequest( string $instanceId, Request $request, $level = AuditLevels::INFO, $facility = AuditingService::DEFAULT_FACILITY )
+ * @method static void setHost($host = GelfLogger::DEFAULT_HOST)
+ * @method static AuditingService setMetadata(array $metadata)
+ * @method static bool log($data = [], $level = AuditLevels::INFO, $request = null)
+ * @method static bool logRequest(string $instanceId, Request $request, $level = AuditLevels::INFO, $facility = AuditingService::DEFAULT_FACILITY)
  * @method static GelfLogger getLogger()
- * @method static AuditingService setLogger( LoggerInterface $logger )
+ * @method static AuditingService setLogger(LoggerInterface $logger)
  */
 class Audit extends Facade
 {

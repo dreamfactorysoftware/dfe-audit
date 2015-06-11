@@ -26,15 +26,6 @@ class AuditServiceProvider extends BaseServiceProvider
      */
     const IOC_NAME = 'dfe.audit';
 
-    //******************************************************************************
-    //* Members
-    //******************************************************************************
-
-    /**
-     * @type string
-     */
-    protected $_serviceClass = 'DreamFactory\\Enterprise\\Services\\Auditing\\AuditingService';
-
     //********************************************************************************
     //* Public Methods
     //********************************************************************************
@@ -49,9 +40,8 @@ class AuditServiceProvider extends BaseServiceProvider
         //  Register object into instance container
         $this->singleton(
             static::IOC_NAME,
-            function ( $app )
-            {
-                return new AuditingService( $app );
+            function ($app) {
+                return new AuditingService($app);
             }
         );
     }

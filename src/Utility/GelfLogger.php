@@ -58,14 +58,14 @@ class GelfLogger implements LoggerInterface
      *
      * @return bool
      */
-    public function log( $level, $message, array $context = array() )
+    public function log($level, $message, array $context = [])
     {
-        $_message = new GelfMessage( $context );
+        $_message = new GelfMessage($context);
 
-        $_message->setLevel( $level );
-        $_message->setFullMessage( $message );
+        $_message->setLevel($level);
+        $_message->setFullMessage($message);
 
-        return $this->send( $_message );
+        return $this->send($_message);
     }
 
     /**
@@ -76,9 +76,9 @@ class GelfLogger implements LoggerInterface
      *
      * @return bool
      */
-    public function emergency( $message, array $context = array() )
+    public function emergency($message, array $context = [])
     {
-        $this->log( AuditLevels::EMERGENCY, $message, $context );
+        $this->log(AuditLevels::EMERGENCY, $message, $context);
     }
 
     /**
@@ -92,9 +92,9 @@ class GelfLogger implements LoggerInterface
      *
      * @return bool
      */
-    public function alert( $message, array $context = array() )
+    public function alert($message, array $context = [])
     {
-        $this->log( AuditLevels::ALERT, $message, $context );
+        $this->log(AuditLevels::ALERT, $message, $context);
     }
 
     /**
@@ -107,9 +107,9 @@ class GelfLogger implements LoggerInterface
      *
      * @return bool
      */
-    public function critical( $message, array $context = array() )
+    public function critical($message, array $context = [])
     {
-        $this->log( AuditLevels::CRITICAL, $message, $context );
+        $this->log(AuditLevels::CRITICAL, $message, $context);
     }
 
     /**
@@ -121,9 +121,9 @@ class GelfLogger implements LoggerInterface
      *
      * @return bool
      */
-    public function error( $message, array $context = array() )
+    public function error($message, array $context = [])
     {
-        $this->log( AuditLevels::ERROR, $message, $context );
+        $this->log(AuditLevels::ERROR, $message, $context);
     }
 
     /**
@@ -137,9 +137,9 @@ class GelfLogger implements LoggerInterface
      *
      * @return bool
      */
-    public function warning( $message, array $context = array() )
+    public function warning($message, array $context = [])
     {
-        $this->log( AuditLevels::WARNING, $message, $context );
+        $this->log(AuditLevels::WARNING, $message, $context);
     }
 
     /**
@@ -150,9 +150,9 @@ class GelfLogger implements LoggerInterface
      *
      * @return bool
      */
-    public function notice( $message, array $context = array() )
+    public function notice($message, array $context = [])
     {
-        $this->log( AuditLevels::NOTICE, $message, $context );
+        $this->log(AuditLevels::NOTICE, $message, $context);
     }
 
     /**
@@ -165,9 +165,9 @@ class GelfLogger implements LoggerInterface
      *
      * @return bool
      */
-    public function info( $message, array $context = array() )
+    public function info($message, array $context = [])
     {
-        $this->log( AuditLevels::INFO, $message, $context );
+        $this->log(AuditLevels::INFO, $message, $context);
     }
 
     /**
@@ -178,9 +178,9 @@ class GelfLogger implements LoggerInterface
      *
      * @return bool
      */
-    public function debug( $message, array $context = array() )
+    public function debug($message, array $context = [])
     {
-        $this->log( AuditLevels::DEBUG, $message, $context );
+        $this->log(AuditLevels::DEBUG, $message, $context);
     }
 
     /**
@@ -188,20 +188,17 @@ class GelfLogger implements LoggerInterface
      *
      * @return bool
      */
-    public function send( GelfMessage $message )
+    public function send(GelfMessage $message)
     {
-        if ( false === ( $_chunks = $this->_prepareMessage( $message ) ) )
-        {
+        if (false === ($_chunks = $this->_prepareMessage($message))) {
             return false;
         }
 
         $_url = 'udp://' . static::$_host . ':' . static::$_port;
-        $_sock = stream_socket_client( $_url );
+        $_sock = stream_socket_client($_url);
 
-        foreach ( $_chunks as $_chunk )
-        {
-            if ( !fwrite( $_sock, $_chunk ) )
-            {
+        foreach ($_chunks as $_chunk) {
+            if (!fwrite($_sock, $_chunk)) {
                 return false;
             }
         }
@@ -216,22 +213,20 @@ class GelfLogger implements LoggerInterface
      *
      * @return array
      */
-    protected function _prepareMessage( GelfMessage $message )
+    protected function _prepareMessage(GelfMessage $message)
     {
-        $_json = JsonFile::encode( $message->toArray() );
+        $_json = JsonFile::encode($message->toArray());
 
-        if ( false === ( $_gzJson = gzcompress( $_json ) ) )
-        {
+        if (false === ($_gzJson = gzcompress($_json))) {
             return false;
         }
 
         //  If we are less than the max chunk size, we're done
-        if ( strlen( $_gzJson ) <= static::MAX_CHUNK_SIZE )
-        {
-            return array($_gzJson);
+        if (strlen($_gzJson) <= static::MAX_CHUNK_SIZE) {
+            return [$_gzJson];
         }
 
-        return $this->_prepareChunks( str_split( $_gzJson, static::MAX_CHUNK_SIZE ) );
+        return $this->_prepareChunks(str_split($_gzJson, static::MAX_CHUNK_SIZE));
     }
 
     /**
@@ -242,23 +237,21 @@ class GelfLogger implements LoggerInterface
      *
      * @return string[] An array of packed chunks ready to send
      */
-    protected function _prepareChunks( $chunks, $msgId = null )
+    protected function _prepareChunks($chunks, $msgId = null)
     {
-        $msgId = $msgId ?: hash( 'sha256', microtime( true ) . rand( 10000, 99999 ), true );
+        $msgId = $msgId ?: hash('sha256', microtime(true) . rand(10000, 99999), true);
 
         $_sequence = 0;
-        $_count = count( $chunks );
+        $_count = count($chunks);
 
-        if ( $_count > static::MAX_CHUNKS_ALLOWED )
-        {
+        if ($_count > static::MAX_CHUNKS_ALLOWED) {
             return false;
         }
 
-        $_prepared = array();
+        $_prepared = [];
 
-        foreach ( $chunks as $_chunk )
-        {
-            $_prepared[] = pack( 'CC', 30, 15 ) . $msgId . pack( 'nn', $_sequence++, $_count ) . $_chunk;
+        foreach ($chunks as $_chunk) {
+            $_prepared[] = pack('CC', 30, 15) . $msgId . pack('nn', $_sequence++, $_count) . $_chunk;
         }
 
         return $_prepared;
@@ -275,7 +268,7 @@ class GelfLogger implements LoggerInterface
     /**
      * @param string $host
      */
-    public static function setHost( $host )
+    public static function setHost($host)
     {
         static::$_host = $host;
     }
@@ -291,7 +284,7 @@ class GelfLogger implements LoggerInterface
     /**
      * @param int $port
      */
-    public static function setPort( $port )
+    public static function setPort($port)
     {
         static::$_port = $port;
     }
