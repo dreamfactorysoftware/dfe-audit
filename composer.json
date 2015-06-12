@@ -8,7 +8,9 @@
     "utility",
     "queue"
   ],
-  "license":           ["proprietary"],
+  "license":           [
+    "proprietary"
+  ],
   "authors":           [
     {
       "name":  "Jerry Ablan",
@@ -29,6 +31,14 @@
     "laravel/framework": "5.1.*",
     "phpunit/phpunit":   "@stable"
   },
-  "autoload":          {"psr-4": {"DreamFactory\\Enterprise\\Services\\Auditing\\": "src/"}},
-  "extra":             {"branch-alias": {"dev-develop": "1.0.x-dev"}}
+  "autoload":          {
+    "psr-4": {
+      "DreamFactory\\Enterprise\\Services\\Auditing\\": "src/"
+    }
+  },
+  "extra":             {
+    "branch-alias": {
+      "dev-develop": "0.1.x-dev"
+    }
+  }
 }
