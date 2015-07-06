@@ -3,7 +3,6 @@
 use DreamFactory\Enterprise\Services\Auditing\Components\GelfMessage;
 use DreamFactory\Enterprise\Services\Auditing\Enums\AuditLevels;
 use DreamFactory\Enterprise\Services\Auditing\Utility\GelfLogger;
-use DreamFactory\Library\Utility\IfSet;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 
@@ -28,11 +27,11 @@ class AuditingService
     /**
      * @type GelfLogger
      */
-    protected $_logger = null;
+    protected $gelfLogger = null;
     /**
      * @type array
      */
-    protected $_metadata;
+    protected $metadata;
     /**
      * @type Application
      */
@@ -46,11 +45,13 @@ class AuditingService
      * boot up
      *
      * @param Application $app
+     * @param GelfLogger  $logger
      */
-    public function __construct($app)
+    public function __construct($app, GelfLogger $logger = null)
     {
         $this->app = $app;
-        $this->_logger = new GelfLogger();
+
+        $this->setLogger($logger);
     }
 
     /**
@@ -58,7 +59,7 @@ class AuditingService
      */
     public function setHost($host = GelfLogger::DEFAULT_HOST)
     {
-        $this->_logger->setHost($host);
+        $this->getLogger()->setHost($host);
     }
 
     /**
@@ -72,34 +73,17 @@ class AuditingService
      *
      * @return bool
      */
-    public function logRequest(
-        $instanceId,
-        Request $request,
-        $sessionData = [],
-        $level = AuditLevels::INFO,
-        $facility = self::DEFAULT_FACILITY
-    ) {
+    public function logRequest($instanceId, Request $request, $sessionData = [], $level = AuditLevels::INFO, $facility = self::DEFAULT_FACILITY)
+    {
         try {
-            $_metadata = IfSet::get($sessionData, 'metadata', []);
-            unset($sessionData['metadata']);
+            $_metadata = array_get($sessionData, 'metadata', []);
+            array_forget($sessionData, 'metadata');
 
             //  Add in stuff for API request logging
             static::log(
                 [
                     'facility' => $facility,
-                    'dfe'      => $this->_metadata
-                        ?: [
-                            'instance_id'       => $instanceId,
-                            'instance_owner_id' => IfSet::get($_metadata, 'owner-email-address'),
-                            'cluster_id'        => IfSet::get($_metadata, 'cluster-id',
-                                $request->server->get('DFE_CLUSTER_ID')),
-                            'app_server_id'     => IfSet::get($_metadata, 'app-server-id',
-                                $request->server->get('DFE_APP_SERVER_ID')),
-                            'db_server_id'      => IfSet::get($_metadata, 'db-server-id',
-                                $request->server->get('DFE_DB_SERVER_ID')),
-                            'web_server_id'     => IfSet::get($_metadata, 'web-server-id',
-                                $request->server->get('DFE_WEB_SERVER_ID')),
-                        ],
+                    'dfe'      => $this->prepareMetadata($instanceId, $request, $_metadata),
                     'user'     => $sessionData,
                 ],
                 $level,
@@ -108,6 +92,30 @@ class AuditingService
         } catch (\Exception $_ex) {
             //  Completely ignore any issues
         }
+    }
+
+    /**
+     * @param string                   $instanceId
+     * @param \Illuminate\Http\Request $request
+     * @param array                    $metadata
+     *
+     * @return array
+     */
+    protected function prepareMetadata($instanceId, Request $request, array $metadata = [])
+    {
+        return $this->metadata
+            ?: [
+                'instance_id'       => $instanceId,
+                'instance_owner_id' => array_get($metadata, 'owner-email-address'),
+                'cluster_id'        => array_get($metadata, 'cluster-id', $request->server->get('DFE_CLUSTER_ID')),
+                'app_server_id'     => array_get($metadata,
+                    'app-server-id',
+                    $request->server->get('DFE_APP_SERVER_ID')),
+                'db_server_id'      => array_get($metadata, 'db-server-id', $request->server->get('DFE_DB_SERVER_ID')),
+                'web_server_id'     => array_get($metadata,
+                    'web-server-id',
+                    $request->server->get('DFE_WEB_SERVER_ID')),
+            ];
     }
 
     /**
@@ -133,7 +141,7 @@ class AuditingService
             $_message->setFullMessage('DFE Audit | ' . implode(', ',
                     $_data['source_ip']) . ' | ' . $_data['request_timestamp']);
 
-            $this->_logger->send($_message);
+            $this->getLogger()->send($_message);
         } catch (\Exception $_ex) {
             //  Completely ignore any issues
         }
@@ -147,20 +155,17 @@ class AuditingService
     protected function _buildBasicEntry($request)
     {
         return [
-            'request_timestamp' => (double)$request->server->get('REQUEST_TIME_FLOAT'),
-            'user_agent'        => $request->headers->get('user-agent'),
+            'request_timestamp' => (double)$request->server->get('REQUEST_TIME_FLOAT', microtime(true)),
+            'user_agent'        => $request->headers->get('user-agent', 'None'),
             'source_ip'         => $request->getClientIps(),
             'content_type'      => $request->getContentType(),
-            'content_length'    => (int)$request->headers->get('Content-Length') ?: 0,
-            'token'             => $request->headers->get('x-dreamfactory-session-token'),
-            'app_name'          => IfSet::get(
-                $_GET,
-                'app_name',
-                $request->headers->get(
-                    'x-dreamfactory-application-name',
-                    $request->headers->get('x-application-name')
-                )
-            ),
+            'content_length'    => (int)$request->headers->get('Content-Length', 0),
+            'token'             => $request->headers->get('x-dreamfactory-session-token',
+                $request->headers->get('x-dreamfactory-access-token',
+                    $request->headers->get('authorization', $request->query->get('access_token')))),
+            'app_name'          => $request->query->get('app_name',
+                $request->headers->get('x-dreamfactory-application-name',
+                    $request->headers->get('x-application-name'))),
             'dfe'               => [],
             'host'              => $request->getHost(),
             'method'            => $request->getMethod(),
@@ -175,7 +180,7 @@ class AuditingService
      */
     public function getLogger()
     {
-        return $this->_logger;
+        return $this->gelfLogger;
     }
 
     /**
@@ -187,7 +192,7 @@ class AuditingService
      */
     public function setLogger(GelfLogger $logger)
     {
-        $this->_logger = $logger;
+        $this->gelfLogger = $logger ?: new GelfLogger();
 
         return $this;
     }
@@ -199,10 +204,10 @@ class AuditingService
      */
     public function setMetadata(array $metadata)
     {
-        $this->_metadata = [];
+        $this->metadata = [];
 
         foreach ($metadata as $_key => $_value) {
-            $this->_metadata[str_replace('-', '_', $_key)] = $_value;
+            $this->metadata[str_replace('-', '_', $_key)] = $_value;
         }
 
         return $this;
