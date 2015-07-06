@@ -1,5 +1,6 @@
 <?php namespace DreamFactory\Enterprise\Services\Auditing;
 
+use DreamFactory\Enterprise\Common\Traits\EntityLookup;
 use DreamFactory\Enterprise\Services\Auditing\Components\GelfMessage;
 use DreamFactory\Enterprise\Services\Auditing\Enums\AuditLevels;
 use DreamFactory\Enterprise\Services\Auditing\Utility\GelfLogger;
@@ -18,7 +19,13 @@ class AuditingService
     /**
      * @type string
      */
-    const DEFAULT_FACILITY = 'fabric-instance';
+    const DEFAULT_FACILITY = 'dreamfactory-enterprise';
+
+    //******************************************************************************
+    //* Traits
+    //******************************************************************************
+
+    use EntityLookup;
 
     //******************************************************************************
     //* Members
