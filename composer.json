@@ -1,42 +1,44 @@
 {
-	"name":              "dreamfactory/dfe-audit",
-	"description":       "DreamFactory Enterprise(tm) Auditing Library",
-	"homepage":          "https://www.dreamfactory.com/",
-	"keywords":          [
-		"dreamfactory",
-		"fabric",
-		"utility",
-		"queue"
-	],
-	"license":           ["proprietary"],
-	"authors":           [
-		{
-			"name":  "Jerry Ablan",
-			"email": "jerryablan@dreamfactory.com"
-		}
-	],
-	"repositories":      [
-		{
-			"type": "vcs",
-			"url":  "git@github.com:dreamfactorysoftware/fabric-db.git"
-		},
-		{
-			"type": "vcs",
-			"url":  "git@github.com:dreamfactorysoftware/fabric-common.git"
-		},
-		{
-			"type": "vcs",
-			"url":  "git@github.com:dreamfactorysoftware/dfe-common.git"
-		}
-	],
-	"minimum-stability": "dev",
-	"require":           {
-		"dreamfactory/dfe-common": "dev-develop as dev-master"
-	},
-	"require-dev":       {
-		"laravel/framework": "~5.0",
-		"phpunit/phpunit":   "@stable"
-	},
-	"autoload":          { "psr-4": { "DreamFactory\\Enterprise\\Services\\Auditing\\": "src/" } },
-	"extra":             { "branch-alias": { "dev-develop": "1.0.x-dev" } }
+  "name":              "dreamfactory/dfe-audit",
+  "description":       "DreamFactory Enterprise(tm) Auditing Library",
+  "homepage":          "https://www.dreamfactory.com/",
+  "keywords":          [
+    "dreamfactory",
+    "fabric",
+    "utility",
+    "queue"
+  ],
+  "license":           [
+    "proprietary"
+  ],
+  "authors":           [
+    {
+      "name":  "Jerry Ablan",
+      "email": "jerryablan@dreamfactory.com"
+    }
+  ],
+  "repositories":      [
+    {
+      "type": "vcs",
+      "url":  "git@github.com:dreamfactorysoftware/dfe-common.git"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require":           {
+    "dreamfactory/dfe-common": "dev-develop as dev-master"
+  },
+  "require-dev":       {
+    "laravel/framework": "5.1.*",
+    "phpunit/phpunit":   "@stable"
+  },
+  "autoload":          {
+    "psr-4": {
+      "DreamFactory\\Enterprise\\Services\\Auditing\\": "src/"
+    }
+  },
+  "extra":             {
+    "branch-alias": {
+      "dev-develop": "1.0.x-dev"
+    }
+  }
 }

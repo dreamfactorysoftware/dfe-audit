@@ -1,8 +1,6 @@
-<?php namespace DreamFactory\Enterprise\Services\Auditing\Providers;
+<?php namespace DreamFactory\Enterprise\Services\Auditing;
 
 use DreamFactory\Enterprise\Common\Providers\BaseServiceProvider;
-use DreamFactory\Enterprise\Services\Auditing\Services\AuditingService;
-use Illuminate\Http\Request;
 
 /**
  * Register the auditing service as a provider with Laravel.
@@ -24,22 +22,9 @@ class AuditServiceProvider extends BaseServiceProvider
     //******************************************************************************
 
     /**
-     * @type string The name of the alias to create
-     */
-    const ALIAS_NAME = 'Audit';
-    /**
      * @type string The name of the service in the IoC
      */
     const IOC_NAME = 'dfe.audit';
-
-    //******************************************************************************
-    //* Members
-    //******************************************************************************
-
-    /**
-     * @type string
-     */
-    protected $_serviceClass = 'DreamFactory\\Library\\Fabric\\Auditing\\AuditingService';
 
     //********************************************************************************
     //* Public Methods
@@ -55,22 +40,9 @@ class AuditServiceProvider extends BaseServiceProvider
         //  Register object into instance container
         $this->singleton(
             static::IOC_NAME,
-            function ( $app, Request $request )
-            {
-                return new AuditingService( $app, $request );
+            function ($app) {
+                return new AuditingService($app);
             }
         );
     }
-
-    /**
-     * Publish our junk
-     */
-    public function boot()
-    {
-        if ( !file_exists( config_path( 'instance.php' ) ) )
-        {
-            $this->publishes( [__DIR__ . '/../../config/instance.php' => config_path( 'instance.php' ),], 'config' );
-        }
-    }
-
 }

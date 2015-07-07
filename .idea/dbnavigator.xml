@@ -32,6 +32,12 @@
     </execution-history>
     <argument-values-cache />
   </component>
+  <component name="DBNavigator.Project.ObjectDependencyManager">
+    <last-used-dependency-type value="INCOMING" />
+  </component>
+  <component name="DBNavigator.Project.ScriptExecutionManager" clear-outputs="true">
+    <recently-used-interfaces />
+  </component>
   <component name="DBNavigator.Project.Settings">
     <connections />
     <browser-settings>
@@ -164,6 +170,7 @@
           <content-type name="JSPx" enabled="true" />
           <content-type name="ASP" enabled="true" />
           <content-type name="YAML" enabled="true" />
+          <content-type name="Bash" enabled="true" />
         </content-types>
       </qualified-text-editor>
       <record-navigation>
@@ -175,6 +182,10 @@
         <show-object-navigation-gutter value="false" />
         <show-spec-declaration-navigation-gutter value="true" />
       </general>
+      <confirmations>
+        <save-changes value="false" />
+        <revert-changes value="true" />
+      </confirmations>
     </code-editor-settings>
     <code-completion-settings>
       <filters>
@@ -338,16 +349,14 @@
         <execution-timeout value="20" />
         <focus-result value="false" />
       </statement-execution>
+      <script-execution>
+        <command-line-interfaces />
+      </script-execution>
       <statement-execution>
         <execution-timeout value="20" />
         <debug-execution-timeout value="600" />
         <parameter-history-size value="10" />
       </statement-execution>
-      <compiler>
-        <compile-type value="ASK" />
-        <compile-dependencies value="ASK" />
-        <always-show-controls value="false" />
-      </compiler>
     </execution-engine-settings>
     <operation-settings>
       <transactions>
@@ -366,6 +375,11 @@
         <kill-session value="ASK" />
         <reload-on-filter-change value="false" />
       </session-browser>
+      <compiler>
+        <compile-type value="KEEP" />
+        <compile-dependencies value="ASK" />
+        <always-show-controls value="false" />
+      </compiler>
     </operation-settings>
     <ddl-file-settings>
       <extensions>
