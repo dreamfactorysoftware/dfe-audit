@@ -197,7 +197,7 @@ class AuditingService
      *
      * @return $this
      */
-    public function setLogger(GelfLogger $logger)
+    public function setLogger(GelfLogger $logger = null)
     {
         $this->gelfLogger = $logger ?: new GelfLogger();
 
