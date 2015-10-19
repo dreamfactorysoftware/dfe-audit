@@ -1,6 +1,5 @@
 <?php namespace DreamFactory\Enterprise\Services\Auditing;
 
-use DreamFactory\Enterprise\Common\Traits\EntityLookup;
 use DreamFactory\Enterprise\Services\Auditing\Components\GelfMessage;
 use DreamFactory\Enterprise\Services\Auditing\Enums\AuditLevels;
 use DreamFactory\Enterprise\Services\Auditing\Utility\GelfLogger;
@@ -20,12 +19,6 @@ class AuditingService
      * @type string
      */
     const DEFAULT_FACILITY = 'dreamfactory-enterprise';
-
-    //******************************************************************************
-    //* Traits
-    //******************************************************************************
-
-    use EntityLookup;
 
     //******************************************************************************
     //* Members
@@ -87,15 +80,13 @@ class AuditingService
             array_forget($sessionData, 'metadata');
 
             //  Add in stuff for API request logging
-            static::log(
-                [
-                    'facility' => $facility,
-                    'dfe'      => $this->prepareMetadata($instanceId, $request, $_metadata),
-                    'user'     => $sessionData,
-                ],
+            static::log([
+                'facility' => $facility,
+                'dfe'      => $this->prepareMetadata($instanceId, $request, $_metadata),
+                'user'     => $sessionData,
+            ],
                 $level,
-                $request
-            );
+                $request);
         } catch (\Exception $_ex) {
             //  Completely ignore any issues
         }

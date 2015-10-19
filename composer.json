@@ -25,7 +25,6 @@
   ],
   "minimum-stability": "dev",
   "require":           {
-    "dreamfactory/dfe-common": "dev-develop as dev-master"
   },
   "require-dev":       {
     "laravel/framework": "5.1.*",
