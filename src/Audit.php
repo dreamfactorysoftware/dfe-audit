@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @method static void setHost($host = GelfLogger::DEFAULT_HOST)
  * @method static AuditingService setMetadata(array $metadata)
  * @method static bool log($data = [], $level = AuditLevels::INFO, $request = null)
- * @method static bool logRequest(string $instanceId, Request $request, $level = AuditLevels::INFO, $facility = AuditingService::DEFAULT_FACILITY)
+ * @method static bool logRequest($instanceId, Request $request, $sessionData = [], $level = AuditLevels::INFO, $facility = AuditingService::DEFAULT_FACILITY)
  * @method static GelfLogger getLogger()
  * @method static AuditingService setLogger(LoggerInterface $logger)
  */

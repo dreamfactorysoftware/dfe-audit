@@ -20,12 +20,11 @@
   "repositories":      [
     {
       "type": "vcs",
-      "url":  "git@github.com:dreamfactorysoftware/dfe-common.git"
+      "url":  "https://github.com/dreamfactorysoftware/dfe-common.git"
     }
   ],
   "minimum-stability": "dev",
   "require":           {
-    "dreamfactory/dfe-common": "dev-develop as dev-master"
   },
   "require-dev":       {
     "laravel/framework": "5.1.*",
