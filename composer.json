@@ -1,6 +1,6 @@
 {
     "name":              "dreamfactory/dfe-audit",
-    "description":       "DreamFactory Enterprise(tm) Auditing Library",
+    "description":       "DreamFactory(tm) Enterprise Auditing Package",
     "homepage":          "https://www.dreamfactory.com/",
     "keywords":          [
         "dreamfactory",
